@@ -1,0 +1,106 @@
+{
+  "resources": {
+    "token1": [
+      {
+        "type": "photo-api",
+        "actions": [
+          "read",
+          "write",
+          "dolphin"
+        ],
+        "locations": [
+          "https://server.example.net/",
+          "https://resource.local/other"
+        ],
+        "datatypes": [
+          "metadata",
+          "images"
+        ]
+      },
+      "dolphin-metadata"
+    ],
+    "token2": [
+      {
+        "type": "walrus-access",
+        "actions": [
+          "foo",
+          "bar"
+        ],
+        "locations": [
+          "https://resource.other/"
+        ],
+        "datatypes": [
+          "data",
+          "pictures",
+          "walrus whiskers"
+        ]
+      }
+    ]
+  },
+  "key": {
+    "proof": "jwsd",
+    "jwk": {
+      "kty": "RSA",
+      "e": "AQAB",
+      "kid": "xyz-1",
+      "alg": "RS256",
+      "n": "kOB5rR4Jv0GMeL...."
+    }
+  },
+  "interact": {
+    "redirect": true,
+    "callback": {
+      "method": "redirect",
+      "uri": "https://client.example.net/return/123455",
+      "nonce": "LKLTI25DK82FX4T4QFZC"
+    },
+    "ui_locales": [
+      "en-US",
+      "fr-CA"
+    ]
+  },
+  "display": {
+    "name": "My Client Display Name",
+    "uri": "https://example.net/client"
+  },
+  "capabilities": [
+    "ext1",
+    "ext2"
+  ],
+  "subject": {
+    "sub_ids": [
+      "iss-sub",
+      "email"
+    ],
+    "assertions": [
+      "id_token"
+    ]
+  },
+  "user": {
+    "sub_ids": [
+      {
+        "subject_type": "email",
+        "email": "user@example.com"
+      }
+    ],
+    "assertions": {
+      "id_token": "eyj..."
+    }
+  },
+  "claims": {
+    "id_token": {
+      "email": {
+        "essential": true
+      },
+      "email_verified": {
+        "essential": true
+      }
+    },
+    "userinfo": {
+      "name": {
+        "essential": true
+      },
+      "picture": null
+    }
+  }
+}

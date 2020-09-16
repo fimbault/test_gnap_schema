@@ -1,0 +1,335 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "name": "Request",
+  "definitions": {
+    "resource": {
+      "type": [
+        "string",
+        "object"
+      ],
+      "required": [
+        "type"
+      ],
+      "properties": {
+        "type": {
+          "type": "string"
+        },
+        "actions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "locations": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "datatypes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "identifier": {
+          "type": "string"
+        }
+      }
+    },
+    "key": {
+      "type": [
+        "object"
+      ],
+      "properties": {
+        "jwk": {
+          "type": "object"
+        },
+        "cert": {
+          "type": "string"
+        },
+        "cert#S256": {
+          "type": "string"
+        }
+      }
+    },
+    "subject_id_types": {
+      "type": "string",
+      "enum": [
+        "iss-sub",
+        "email",
+        "account",
+        "phone-number"
+      ]
+    },
+    "assertion_types": {
+      "type": "string",
+      "enum": [
+        "id_token",
+        "saml2"
+      ]
+    }
+  },
+  "type": "object",
+  "properties": {
+    "resources": {
+      "type": [
+        "array",
+        "object"
+      ],
+      "items": {
+        "$ref": "#/definitions/resource"
+      },
+      "additionalProperties": {
+        "type": [
+          "array"
+        ],
+        "items": {
+          "$ref": "#/definitions/resource"
+        }
+      }
+    },
+    "subject": {
+      "type": "object",
+      "properties": {
+        "sub_ids": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/subject_id_types"
+          }
+        },
+        "assertions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/assertion_types"
+          }
+        }
+      }
+    },
+    "key": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "allOf": [
+            {
+              "$ref": "#/definitions/key"
+            },
+            {
+              "type": "object",
+              "required": [
+                "proof"
+              ],
+              "properties": {
+                "proof": {
+                  "type": "string",
+                  "enum": [
+                    "jwsd",
+                    "jws",
+                    "mtls",
+                    "dpop",
+                    "pop",
+                    "httpsig"
+                  ]
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "user": {
+      "type": [
+        "object",
+        "string"
+      ],
+      "properties": {
+        "sub_ids": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "subject_type"
+            ],
+            "properties": {
+              "subject_type": {
+                "$ref": "#/definitions/subject_id_types"
+              }
+            },
+            "allOf": [
+              {
+                "if": {
+                  "properties": {
+                    "subject_type": {
+                      "const": "account"
+                    }
+                  }
+                },
+                "then": {
+                  "properties": {
+                    "uri": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "uri"
+                  ]
+                }
+              },
+              {
+                "if": {
+                  "properties": {
+                    "subject_type": {
+                      "const": "email"
+                    }
+                  }
+                },
+                "then": {
+                  "properties": {
+                    "email": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "email"
+                  ]
+                }
+              },
+              {
+                "if": {
+                  "properties": {
+                    "subject_type": {
+                      "const": "phone-number"
+                    }
+                  }
+                },
+                "then": {
+                  "properties": {
+                    "phone_number": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "phone_number"
+                  ]
+                }
+              },
+              {
+                "if": {
+                  "properties": {
+                    "subject_type": {
+                      "const": "iss-sub"
+                    }
+                  }
+                },
+                "then": {
+                  "properties": {
+                    "iss": {
+                      "type": "string"
+                    },
+                    "sub": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "uri",
+                    "sub"
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        "assertions": {
+          "type": "object",
+          "propertyNames": {
+            "$ref": "#/definitions/assertion_types"
+          }
+        }
+      }
+    },
+    "interact": {
+      "type": "object",
+      "properties": {
+        "redirect": {
+          "type": [
+            "boolean",
+            "integer"
+          ]
+        },
+        "callback": {
+          "type": "object",
+          "properties": {
+            "method": {
+              "type": "string",
+              "enum": [
+                "redirect",
+                "push"
+              ]
+            },
+            "uri": {
+              "type": "string"
+            },
+            "nonce": {
+              "type": "string"
+            },
+            "hash_method": {
+              "type": "string",
+              "enum": [
+                "sha3",
+                "sha2"
+              ],
+              "default": "sha3"
+            }
+          }
+        },
+        "user_code": {
+          "type": "boolean"
+        },
+        "app": {
+          "type": "boolean"
+        },
+        "ui_locales": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z]{2,}-[A-Z]{2,}$"
+          }
+        }
+      }
+    },
+    "display": {
+      "type": [
+        "object",
+        "string"
+      ],
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "uri": {
+          "type": "string"
+        },
+        "logo_uri": {
+          "type": "string"
+        }
+      }
+    },
+    "capabilities": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "existing_grant": {
+      "type": "string"
+    },
+    "claims": {
+      "type": "object"
+    },
+    "handle": {
+      "type": "string"
+    }
+  }
+}

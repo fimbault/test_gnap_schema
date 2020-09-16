@@ -1,0 +1,10 @@
+{
+  "resources": {
+    "token1": [
+      {
+        "type": "photo-api",
+        "actions": "read"
+      }
+    ]
+  }
+}
